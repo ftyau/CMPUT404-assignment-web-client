@@ -35,10 +35,10 @@ class HTTPRequest(object):
 class HTTPClient(object):
     def get_host_port(self,url):
         port = url.split(":")
-        if len(port) == 2:
+        if len(port) == 1:
             return 80
         else:
-            port = port[2].split("/")
+            port = port[1].split("/")
             return int(port[0])
 
     def connect(self, host, port=80):
@@ -62,18 +62,18 @@ class HTTPClient(object):
 
     def get_host(self, url):
         host = url.split("/")
-        port = host[2].split(":")
+        port = host[0].split(":")
         return port[0]
 
     def get_path(self, url):
         host = url.split("/")
         path = "/"
         for i in range(len(host)):
-            if i < 3:
+            if i < 1:
                 pass
             else:
                 path += host[i] + "/"
-        if i > 2:
+        if i > 0:
             path = path[:-1]
         return path
 
@@ -90,6 +90,7 @@ class HTTPClient(object):
         return str(buffer)
 
     def GET(self, url, args=None):
+        url = url.strip("http://")
         host = self.get_host(url)
         port = self.get_host_port(url)
         connection = self.connect(host, port)
@@ -108,6 +109,7 @@ class HTTPClient(object):
         return HTTPRequest(code, body)
 
     def POST(self, url, args=None):
+        url = url.strip("http://")
         host = self.get_host(url)
         port = self.get_host_port(url)
         connection = self.connect(host, port)
